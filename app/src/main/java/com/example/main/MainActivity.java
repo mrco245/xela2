@@ -108,7 +108,11 @@ public class MainActivity extends AppCompatActivity{
         }
 
         webView.getSettings().setAllowContentAccess(true);
+        webView.getSettings().setBuiltInZoomControls(true);
+
+        //adds the javascipt functionality and names the handler
         webView.addJavascriptInterface(new WebAppInterface(this), "xelaHandler");
+
         webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
 
         //Request the Permissions until all permissions are granted
