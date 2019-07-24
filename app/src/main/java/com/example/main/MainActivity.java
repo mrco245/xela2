@@ -1,5 +1,7 @@
 package com.example.main;
 
+import android.view.Menu;
+import android.view.MenuItem;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -151,6 +153,33 @@ public class MainActivity extends AppCompatActivity{
 
 
 
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        switch (item.getItemId()){
+            case R.id.action_home : webView.loadUrl("file:///sdcard/phone/welcome.html"); break;
+            case R.id.action_refresh : webView.loadUrl(webView.getUrl()); break;
+           // case R.id.action_fav : Toast.makeText(this, "Added To Favorite",Toast.LENGTH_SHORT).show(); break;
+            //case R.id.action_back : if(webView.canGoBack()){ webView.goBack(); } break;
+           // case R.id.action_forward : if(webView.canGoForward()){ webView.goForward(); } break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     //Allows the back button to be pressed and function properly as expected
