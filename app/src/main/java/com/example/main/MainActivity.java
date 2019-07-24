@@ -111,27 +111,37 @@ public class MainActivity extends AppCompatActivity{
         webView.addJavascriptInterface(new WebAppInterface(this), "xelaHandler");
         webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
 
+        //Request the Permissions until all permissions are granted
+        //Will check if the user disabled a permission, it will ask for only that permission
         do {
             RequestPermission();
         }while (!CheckPermission());
 
+        //if the user has the permissions necessary for the project
         if (CheckPermission())
         {
+            //Checks to see if the user has a SD card
             if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
                 //Log.d(TAG, "No SDCARD");
             } else {
-
+                //Opens up the correct webpage
                 try {
-                    //webView.loadUrl("file:///sdcard/phone/welcome.html");
-                    webView.loadUrl("file:///android_asset/madisons.html");
+                    //opens up the webpage stored on the phones sd card
+                    webView.loadUrl("file:///sdcard/phone/welcome.html");
+
+                    //opens up the webpage stored in the assets folder in this project
+                    //webView.loadUrl("file:///android_asset/madisons.html");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
 
 
+            //Starts and registers the sensor listener
             StartSensors();
+            //Starts the gps location listener
             startLocationListener();
+            //checks the network state
             checkInternet();
         }
 
@@ -139,6 +149,7 @@ public class MainActivity extends AppCompatActivity{
 
     }
 
+    //Allows the back button to be pressed and function properly as expected
     @Override
     public void onBackPressed() {
         if(webView.canGoBack()) {
@@ -152,15 +163,14 @@ public class MainActivity extends AppCompatActivity{
     {
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
-            if(Uri.parse(url).getHost().endsWith("html")) {
-                return false;
-            }
 
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             view.getContext().startActivity(intent);
             return true;
         }
     }
+
+    //Requests the required permissions from the user at runtime
     private void RequestPermission()
     {
         ActivityCompat.requestPermissions(this, new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE, ACCESS_NETWORK_STATE, ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION, READ_PHONE_STATE, READ_CONTACTS}, RequestPermissionCode);
@@ -191,6 +201,7 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
+    //Checks the permissions to see if they are allowed or not.
     public boolean CheckPermission ()
     {
         int result = ContextCompat.checkSelfPermission(getApplicationContext(), WRITE_EXTERNAL_STORAGE);
