@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.usb.*;
+import android.widget.Toast;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -15,12 +16,12 @@ import static com.example.main.WebAppInterface.data_in;
 public class USBColor {
     private static final int targetVendorID= 26214;
     private static final int targetProductID = 26215;
-    UsbDevice deviceFound = null;
-    UsbInterface usbInterfaceFound = null;
-    UsbEndpoint endpointIn = null;
-    UsbEndpoint endpointOut = null;
+    static UsbDevice deviceFound = null;
+    static UsbInterface usbInterfaceFound = null;
+    static UsbEndpoint endpointIn = null;
+    static UsbEndpoint endpointOut = null;
 
-    public static int r, g, b;
+    public static byte r, g, b;
 
     private static final String ACTION_USB_PERMISSION =
             "com.android.example.USB_PERMISSION";
@@ -126,13 +127,16 @@ public class USBColor {
         }
 
         if(deviceFound==null){
-            /**
-             Toast.makeText(Color.this,
-             "device not found",
-             Toast.LENGTH_LONG).show();
-             textStatus.setText("device not found");
-             }else{
-             String s = deviceFound.toString() + "\n" +
+
+            // Toast.makeText(USBColor.this,
+             //"device not found",
+            // Toast.LENGTH_LONG).show();
+             /**
+             textStatus.setText("device not found");**/
+             }
+              else{
+
+            /** String s = deviceFound.toString() + "\n" +
              "DeviceID: " + deviceFound.getDeviceId() + "\n" +
              "DeviceName: " + deviceFound.getDeviceName() + "\n" +
              "DeviceClass: " + deviceFound.getDeviceClass() + "\n" +
@@ -146,25 +150,19 @@ public class USBColor {
             endpointOut = usbInterfaceFound.getEndpoint(1);
             endpointIn = usbInterfaceFound.getEndpoint(0);
 
-            if(usbInterfaceFound==null){
-                /**
-                 textSearchedEndpoint.setText("No suitable interface found!");
-                 }else{
-                 textSearchedEndpoint.setText(
-                 "UsbInterface found: " + usbInterfaceFound.toString() + "\n\n" +
-                 "Endpoint OUT: " + endpointOut.toString() + "\n\n" +
-                 "Endpoint IN: " + endpointIn.toString());
-                 }**/
-            }
         }
     }
 
 
-    public void hex2rgb(String colorStr)
+    public static byte[] hex2rgb(String colorStr)
     {
-        r = Integer.valueOf(colorStr.substring(1,3),16);
-        g = Integer.valueOf(colorStr.substring(3,5),16);
-        b = Integer.valueOf(colorStr.substring(5,7),16);
+
+        byte r = (byte)Integer.parseInt( colorStr.substring(1,3),16);
+        byte g = (byte)Integer.parseInt(colorStr.substring(3,5),16);
+        byte b = (byte)Integer.parseInt(colorStr.substring(5,7),16);
+
+       byte[] data = {b,g,r};
+        return data;
     }
 
     public boolean setupUsbComm(){
@@ -185,15 +183,20 @@ public class USBColor {
                 usbDeviceConnection.claimInterface(usbInterfaceFound, true);
 
                 int usbResult;
+                byte[] test ={};
                 try{
-                    hex2rgb(data_in.get("color").toString());
+                    test = hex2rgb(data_in.get("color").toString());
+                    System.out.println(test);
+                    System.out.println(test[0]);
+                    System.out.println(test[1]);
+                    System.out.println(test[2]);
                 }catch (Exception e)
                 {
                     e.printStackTrace();
                 }
                 //hex2rgb(data_in.get("color"));
 
-                byte[] message = {0x16, 0x05, 0x00, 0x00, 0x01, 0x00, (byte)b, (byte)g, (byte)r};
+                byte[] message = {0x16, 0x05, 0x00, 0x00, 0x01, 0x00, test[0], test[1], test[2]};
                 System.out.println(message);
                 //String messageStr = "\0x15\0x04\0x00\0x00\0x00\0x00\0x00\0xFF";
 

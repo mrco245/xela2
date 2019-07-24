@@ -1,11 +1,14 @@
 package com.example.main;
 
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -33,6 +36,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import static android.Manifest.permission.*;
+import static com.example.main.USBColor.deviceFound;
 
 public class MainActivity extends AppCompatActivity{
 
@@ -47,6 +51,10 @@ public class MainActivity extends AppCompatActivity{
     public static TelephonyManager tm1;
     public static ConnectivityManager connManager;
     public static UsbManager manager;
+
+    private static final String ACTION_USB_PERMISSION =
+            "com.android.example.USB_PERMISSION";
+    public static PendingIntent mPermissionIntent;
 
     public static SensorManager sensorManager;
     public static Sensor accelerometer, mGyro, mMagno, mPressure, mTemp, mHumi;
@@ -261,7 +269,85 @@ public class MainActivity extends AppCompatActivity{
         tm1 = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
 
          manager = (UsbManager) getSystemService(Context.USB_SERVICE);
+        mPermissionIntent = PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0);
+        IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
+        registerReceiver(mUsbReceiver, filter);
+
+        registerReceiver(mUsbDeviceReceiver, new IntentFilter(UsbManager.ACTION_USB_DEVICE_ATTACHED));
+        registerReceiver(mUsbDeviceReceiver, new IntentFilter(UsbManager.ACTION_USB_DEVICE_DETACHED));
+
     }
+    public final BroadcastReceiver mUsbReceiver =
+            new BroadcastReceiver() {
+
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    String action = intent.getAction();
+                    if (ACTION_USB_PERMISSION.equals(action)) {
+
+                        /** Toast.makeText(Color.this,
+                         "ACTION_USB_PERMISSION",
+                         Toast.LENGTH_LONG).show();
+                         textStatus.setText("ACTION_USB_PERMISSION");**/
+
+                        synchronized (this) {
+                            UsbDevice device = (UsbDevice)intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
+
+                            if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
+                                if(device != null){
+                                    //connectUsb();
+                                }
+                            }
+                            else {
+                                /**Toast.makeText(Color.this,
+                                 "permission denied for device " + device,
+                                 Toast.LENGTH_LONG).show();
+                                 textStatus.setText("permission denied for device " + device);**/
+                            }
+                        }
+                    }
+                }
+            };
+
+    public final BroadcastReceiver mUsbDeviceReceiver =
+            new BroadcastReceiver() {
+
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    String action = intent.getAction();
+                    if (UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action)) {
+
+                        deviceFound = (UsbDevice)intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
+                        /**Toast.makeText(Color.this,
+                         "ACTION_USB_DEVICE_ATTACHED: \n" +
+                         deviceFound.toString(),
+                         Toast.LENGTH_LONG).show();
+                         textStatus.setText("ACTION_USB_DEVICE_ATTACHED: \n" +
+                         deviceFound.toString());**/
+
+                        //connectUsb();
+
+                    }else if (UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
+
+                        UsbDevice device = (UsbDevice)intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
+
+                        /** Toast.makeText(Color.this,
+                         "ACTION_USB_DEVICE_DETACHED: \n" +
+                         device.toString(),
+                         Toast.LENGTH_LONG).show();
+                         textStatus.setText("ACTION_USB_DEVICE_DETACHED: \n" +
+                         device.toString());**/
+
+                        if(device!=null){
+                            if(device == deviceFound){
+                                //releaseUsb();
+                            }
+                        }
+
+                    }
+                }
+
+            };
 
     //functions for GPS location
     public void startLocationListener() {
