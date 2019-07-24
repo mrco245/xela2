@@ -17,11 +17,12 @@ public class WebAppInterface{
     PhoneInfo phoneInfo = new PhoneInfo();
     Time time = new Time();
     GPS gps = new GPS();
+    USBColor usbColor = new USBColor();
 
     //creates the json objects that are used in the javascript handler
     JSONObject data_out = new JSONObject();
     JSONObject rawdata = new JSONObject();
-    JSONObject data_in;
+    public static JSONObject data_in;
     String status = "";
 
 
@@ -40,6 +41,9 @@ public class WebAppInterface{
                 }
                 System.out.println(data_in);
                 rawdata = data_in;
+
+                usbColor.connectUsb();
+
 
                 break;
             case "all-data":

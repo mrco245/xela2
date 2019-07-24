@@ -22,9 +22,9 @@
         <input type="button" value="Display Sensor" onclick="sendAction('SENSOR')"/>
         <input type="button" value="Display 9DOF" onclick="sendAction('9DOF')"/>
         <input type="button" value="Display acc" onclick="sendAction('acc')"/>
-        <input type="button" value="Display acceleramoter" onclick="sendAction('acceleramoter')"/>
+        <input type="button" value="Display accelerometer" onclick="sendAction('acceleramoter')"/>
         <input type="button" value="Display weather" onclick="sendAction('weather')"/>
-        <input type="button" value="Display tempweature" onclick="sendAction('temperature')"/>
+        <input type="button" value="Display temperature" onclick="sendAction('temperature')"/>
 
     </form>
 </div>
@@ -33,11 +33,11 @@
     <form>
         Select your favorite color:
         <input type="color" name="favcolor" id="favcolor" value="#ff0000">
-        <input type="button" value="set color" onclick="sendAction('set-color')"/>
+        <input type="button" id= "set-color" value="set color" onclick="sendAction('set-color')"/>
     </form>
 </div>
 
-<h3>The following displays the information collected from the phone</h3>
+<h3 id="change" >The following displays the information collected from the phone</h3>
 <p>
     The action was <span id="action"></span> and the status was <span id="status"></span>
 </p>
@@ -105,6 +105,9 @@ function returnAction(action, data_out)
 
     switch(action)
     {
+        case "set-color":
+            document.getElementById("change").style.color = data_out["rawdata"]["color"];
+            break;
         case "time":
             document.getElementById("time").innerHTML = data_out["Time"];
             break;

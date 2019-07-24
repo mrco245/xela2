@@ -6,6 +6,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.hardware.usb.UsbManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity{
     public static TelephonyManager tm;
     public static TelephonyManager tm1;
     public static ConnectivityManager connManager;
+    public static UsbManager manager;
 
     public static SensorManager sensorManager;
     public static Sensor accelerometer, mGyro, mMagno, mPressure, mTemp, mHumi;
@@ -257,6 +259,8 @@ public class MainActivity extends AppCompatActivity{
         tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         //cursor = getContentResolver().query(uriContact, null, null, null, null);
         tm1 = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
+
+         manager = (UsbManager) getSystemService(Context.USB_SERVICE);
     }
 
     //functions for GPS location
