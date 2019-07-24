@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">'
+    <title>Web App</title>
+
+
+</head>
+<body>
+<h1>Web App</h1>
+
+<div id="content">
+</div>
+
+<div>
+    <form>
+        <input type="button" value="Send Sensor Data and GPS Location to Web Server" onclick="sendAction('all-data')"/>
+        <input type="button" value="Display Device Info" onclick="sendAction('phone-info')"/>
+        <input type="button" value="Display Current Date and Time" onclick="sendAction('time')"/>
+        <input type="button" value="Display GPS" onclick="sendAction('GPS')"/>
+        <input type="button" value="Display Sensor" onclick="sendAction('SENSOR')"/>
+        <input type="button" value="Display 9DOF" onclick="sendAction('9DOF')"/>
+        <input type="button" value="Display acc" onclick="sendAction('acc')"/>
+        <input type="button" value="Display acceleramoter" onclick="sendAction('acceleramoter')"/>
+        <input type="button" value="Display weather" onclick="sendAction('weather')"/>
+        <input type="button" value="Display tempweature" onclick="sendAction('temperature')"/>
+
+    </form>
+</div>
+
+<div>
+    <form>
+        Select your favorite color:
+        <input type="color" name="favcolor" id="favcolor" value="#ff0000">
+        <input type="button" value="set color" onclick="sendAction('set-color')"/>
+    </form>
+</div>
+
+<h3>The following displays the information collected from the phone</h3>
+<p>
+    The action was <span id="action"></span> and the status was <span id="status"></span>
+</p>
+
+<h4>Time</h4>
+<div id="time"></div>
+
+<h4>Phone Info</h4>
+<p>The users ssid is: <span id="ssid"></span></p>
+<p> The user can access the internet: <span id="wifi"></span></p>
+<p> The user has a mobile plan: <span id="mobile"></span></p>
+<p> The users device info: <div id="device_info"></div></p>
+<p>The users sim id is: <span id="sim_id"></span></p>
+
+<h4>GPS</h4>
+<p style="font-size:90%;">Longitude: <span id="GPS_longitude"></span></p>
+<p style="font-size:90%;">Latitude:  <span id="GPS_latitude"></span></p>
+
+<h4>Sensor Data</h4>
+
+<h5>Weather</h5>
+<p style="font-size:90%;">Temperature: <span id="Sensor_tempValue"></span> <span id="Sensor_tempUnit"></span></p>
+
+<p style="font-size:90%;">Humitidy: <span id="Sensor_humiValue"></span><span id="Sensor_humiUnit"></span></p>
+
+<p style="font-size:90%;">Pressure: <span id="Sensor_pressureValue"></span><span id="Sensor_pressureUnit"></span></p>
+
+<h5>Accelerometer</h5>
+<p style="font-size:90%;">x: <span id="Sensor_accelx"></span></p>
+<p style="font-size:90%;">y: <span id="Sensor_accely"></span></p>
+<p style="font-size:90%;">z: <span id="Sensor_accelz"></span></p>
+
+<h5>Gyroscope</h5>
+<p style="font-size:90%;">x: <span id="Sensor_gyrox"></span></p>
+<p style="font-size:90%;">y: <span id="Sensor_gyroy"></span></p>
+<p style="font-size:90%;"> z: <span id="Sensor_gyroz"></span></p>
+
+<h5>Magnometer</h5>
+<p style="font-size:90%;">x: <span id="Sensor_magnox"></span></p>
+<p style="font-size:90%;">y: <span id="Sensor_magnoy"></span></p>
+<p style="font-size:90%;">z: <span id="Sensor_magnoz"></span></p>
+
+
+</body>
+
+<script type="text/javascript">
+
+function sendAction(action)
+{
+    var color = document.getElementById("favcolor").value;
+    var data_in = {"color" : color};
+
+    var data_out = xelaHandler.xelaHandler(action, JSON.stringify(data_in));
+    //var data = xelaHandler.xelaHandler(action);
+    returnAction(action, data_out);
+
+}
+
+function returnAction(action, data_out)
+{
+    data_out = JSON.parse(data_out);
+
+    document.getElementById("action").innerHTML = data_out["Action"];
+    document.getElementById("status").innerHTML = data_out["Status"];
+
+
+    switch(action)
+    {
+        case "time":
+            document.getElementById("time").innerHTML = data_out["Time"];
+            break;
+
+        case "phone-info":
+            document.getElementById("ssid").innerHTML = data_out["rawdata"]["ssid"];
+            document.getElementById("wifi").innerHTML = data_out["rawdata"]["wifi"];
+            document.getElementById("mobile").innerHTML = data_out["rawdata"]["mobile-data"];
+            document.getElementById("device_info").innerHTML = data_out["rawdata"]["device-info"];
+            document.getElementById("sim_id").innerHTML = data_out["rawdata"]["sim"];
+            break;
+
+        case "GPS":
+            document.getElementById("GPS_latitude").innerHTML = data_out["rawdata"]["data"]["GPS"]["latitude"];
+	        document.getElementById("GPS_longitude").innerHTML = data_out["rawdata"]["data"]["GPS"]["longituide"];
+            break;
+
+         case "SENSOR":
+            document.getElementById("Sensor_tempValue").innerHTML = data_out["rawdata"]["data"]["WEATHER"]["temperature"]["value"];
+	        document.getElementById("Sensor_tempUnit").innerHTML = data_out["rawdata"]["data"]["WEATHER"]["temperature"]["units"];
+
+	        document.getElementById("Sensor_humiValue").innerHTML = data_out["rawdata"]["data"]["WEATHER"]["humidity"]["value"];
+	        document.getElementById("Sensor_humiUnit").innerHTML = data_out["rawdata"]["data"]["WEATHER"]["humidity"]["units"];
+
+	        document.getElementById("Sensor_pressureValue").innerHTML = data_out["rawdata"]["data"]["WEATHER"]["pressure"]["value"];
+	        document.getElementById("Sensor_pressureUnit").innerHTML = data_out["rawdata"]["data"]["WEATHER"]["pressure"]["units"];
+
+	        document.getElementById("Sensor_accelx").innerHTML =  data_out["rawdata"]["data"]["ACCELEROMETER"]["acceleration"]["x"];
+	        document.getElementById("Sensor_accely").innerHTML =  data_out["rawdata"]["data"]["ACCELEROMETER"]["acceleration"]["y"];
+	        document.getElementById("Sensor_accelz").innerHTML =  data_out["rawdata"]["data"]["ACCELEROMETER"]["acceleration"]["z"];
+
+	        document.getElementById("Sensor_gyrox").innerHTML = data_out["rawdata"]["data"]["ACCELEROMETER"]["gyroscope"]["x"];
+	        document.getElementById("Sensor_gyroy").innerHTML = data_out["rawdata"]["data"]["ACCELEROMETER"]["gyroscope"]["y"];
+	        document.getElementById("Sensor_gyroz").innerHTML = data_out["rawdata"]["data"]["ACCELEROMETER"]["gyroscope"]["z"];
+
+	        document.getElementById("Sensor_magnox").innerHTML = data_out["rawdata"]["data"]["ACCELEROMETER"]["magnometer"]["x"];
+	        document.getElementById("Sensor_magnoy").innerHTML = data_out["rawdata"]["data"]["ACCELEROMETER"]["magnometer"]["y"];
+	        document.getElementById("Sensor_magnoz").innerHTML = data_out["rawdata"]["data"]["ACCELEROMETER"]["magnometer"]["z"];
+            break;
+
+         case "all-data":
+            document.getElementById("GPS_latitude").innerHTML = data_out["rawdata"]["data"]["GPS"]["latitude"];
+	        document.getElementById("GPS_longitude").innerHTML = data_out["rawdata"]["data"]["GPS"]["longituide"];
+
+	        document.getElementById("Sensor_tempValue").innerHTML = data_out["rawdata"]["data"]["WEATHER"]["temperature"]["value"];
+	        document.getElementById("Sensor_tempUnit").innerHTML = data_out["rawdata"]["data"]["WEATHER"]["temperature"]["units"];
+
+	        document.getElementById("Sensor_humiValue").innerHTML = data_out["rawdata"]["data"]["WEATHER"]["humidity"]["value"];
+	        document.getElementById("Sensor_humiUnit").innerHTML = data_out["rawdata"]["data"]["WEATHER"]["humidity"]["units"];
+
+	        document.getElementById("Sensor_pressureValue").innerHTML = data_out["rawdata"]["data"]["WEATHER"]["pressure"]["value"];
+	        document.getElementById("Sensor_pressureUnit").innerHTML = data_out["rawdata"]["data"]["WEATHER"]["pressure"]["units"];
+
+	        document.getElementById("Sensor_accelx").innerHTML =  data_out["rawdata"]["data"]["ACCELEROMETER"]["acceleration"]["x"];
+	        document.getElementById("Sensor_accely").innerHTML =  data_out["rawdata"]["data"]["ACCELEROMETER"]["acceleration"]["y"];
+	        document.getElementById("Sensor_accelz").innerHTML =  data_out["rawdata"]["data"]["ACCELEROMETER"]["acceleration"]["z"];
+
+	        document.getElementById("Sensor_gyrox").innerHTML = data_out["rawdata"]["data"]["ACCELEROMETER"]["gyroscope"]["x"];
+	        document.getElementById("Sensor_gyroy").innerHTML = data_out["rawdata"]["data"]["ACCELEROMETER"]["gyroscope"]["y"];
+	        document.getElementById("Sensor_gyroz").innerHTML = data_out["rawdata"]["data"]["ACCELEROMETER"]["gyroscope"]["z"];
+
+	        document.getElementById("Sensor_magnox").innerHTML = data_out["rawdata"]["data"]["ACCELEROMETER"]["magnometer"]["x"];
+	        document.getElementById("Sensor_magnoy").innerHTML = data_out["rawdata"]["data"]["ACCELEROMETER"]["magnometer"]["y"];
+	        document.getElementById("Sensor_magnoz").innerHTML = data_out["rawdata"]["data"]["ACCELEROMETER"]["magnometer"]["z"];
+
+            break;
+
+        case "acceleramoter":
+        case "acc":
+        case "9DOF":
+
+            document.getElementById("Sensor_accelx").innerHTML =  data_out["rawdata"]["data"]["ACCELEROMETER"]["acceleration"]["x"];
+	        document.getElementById("Sensor_accely").innerHTML =  data_out["rawdata"]["data"]["ACCELEROMETER"]["acceleration"]["y"];
+	        document.getElementById("Sensor_accelz").innerHTML =  data_out["rawdata"]["data"]["ACCELEROMETER"]["acceleration"]["z"];
+
+	        document.getElementById("Sensor_gyrox").innerHTML = data_out["rawdata"]["data"]["ACCELEROMETER"]["gyroscope"]["x"];
+	        document.getElementById("Sensor_gyroy").innerHTML = data_out["rawdata"]["data"]["ACCELEROMETER"]["gyroscope"]["y"];
+	        document.getElementById("Sensor_gyroz").innerHTML = data_out["rawdata"]["data"]["ACCELEROMETER"]["gyroscope"]["z"];
+
+	        document.getElementById("Sensor_magnox").innerHTML = data_out["rawdata"]["data"]["ACCELEROMETER"]["magnometer"]["x"];
+	        document.getElementById("Sensor_magnoy").innerHTML = data_out["rawdata"]["data"]["ACCELEROMETER"]["magnometer"]["y"];
+	        document.getElementById("Sensor_magnoz").innerHTML = data_out["rawdata"]["data"]["ACCELEROMETER"]["magnometer"]["z"];
+            break;
+
+        case "temperature":
+        case "weather":
+            document.getElementById("Sensor_tempValue").innerHTML = data_out["rawdata"]["data"]["WEATHER"]["temperature"]["value"];
+	        document.getElementById("Sensor_tempUnit").innerHTML = data_out["rawdata"]["data"]["WEATHER"]["temperature"]["units"];
+
+	        document.getElementById("Sensor_humiValue").innerHTML = data_out["rawdata"]["data"]["WEATHER"]["humidity"]["value"];
+	        document.getElementById("Sensor_humiUnit").innerHTML = data_out["rawdata"]["data"]["WEATHER"]["humidity"]["units"];
+
+	        document.getElementById("Sensor_pressureValue").innerHTML = data_out["rawdata"]["data"]["WEATHER"]["pressure"]["value"];
+	        document.getElementById("Sensor_pressureUnit").innerHTML = data_out["rawdata"]["data"]["WEATHER"]["pressure"]["units"];
+	        break;
+
+        default:
+    }
+}
+
+</script>
+
+</html>
