@@ -18,6 +18,7 @@ public class WebAppInterface{
     Time time = new Time();
     GPS gps = new GPS();
 
+    //creates the json objects that are used in the javascript handler
     JSONObject data_out = new JSONObject();
     JSONObject rawdata = new JSONObject();
     JSONObject data_in;
