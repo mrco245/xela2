@@ -48,7 +48,6 @@
 <h4>Phone Info</h4>
 <p>The users ssid is: <span id="ssid"></span></p>
 <p> The user can access the internet: <span id="wifi"></span></p>
-<p> The user has a mobile plan: <span id="mobile"></span></p>
 <p> The users device info: <div id="device_info"></div>
 <p>The users sim id is: <span id="sim_id"></span></p>
 
@@ -113,7 +112,6 @@ function returnAction(action, data_out)
         case "phone-info":
             document.getElementById("ssid").innerHTML = data_out["rawdata"]["ssid"];
             document.getElementById("wifi").innerHTML = data_out["rawdata"]["wifi"];
-            document.getElementById("mobile").innerHTML = data_out["rawdata"]["mobile-data"];
             document.getElementById("device_info").innerHTML = data_out["rawdata"]["device-info"];
             document.getElementById("sim_id").innerHTML = data_out["rawdata"]["sim"];
             break;

@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity{
     public static NetworkInfo mMobile;
     public static TelephonyManager tm;
     public static TelephonyManager tm1;
+    public static ConnectivityManager connManager;
 
     public static SensorManager sensorManager;
     public static Sensor accelerometer, mGyro, mMagno, mPressure, mTemp, mHumi;
@@ -71,7 +72,8 @@ public class MainActivity extends AppCompatActivity{
     public static JSONObject gps = new JSONObject();
     public static Sensors sensors = new Sensors();
 
-    String url = "file://" +Environment.getExternalStorageDirectory().getPath() +"/phone/welcome.html";
+    //String url = "file://" +Environment.getExternalStorageDirectory().getPath() +"/phone/welcome.html";
+    String url = "file:///android_asset/madisons.html";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,13 +105,14 @@ public class MainActivity extends AppCompatActivity{
 
         webView.getSettings().setAllowContentAccess(true);
         webView.getSettings().setBuiltInZoomControls(true);
+        webView.getSettings().setDisplayZoomControls(false);
 
         //adds the javascipt functionality and names the handler
         webView.addJavascriptInterface(new WebAppInterface(this), "xelaHandler");
 
         webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
 
-        String url = "file://" +Environment.getExternalStorageDirectory().getPath() +"/phone/welcome.html";
+        //String url = "file://" +Environment.getExternalStorageDirectory().getPath() +"/phone/welcome.html";
 
         //Request the Permissions until all permissions are granted
         //Will check if the user disabled a permission, it will ask for only that permission
@@ -248,7 +251,7 @@ public class MainActivity extends AppCompatActivity{
 
     //Starts and gets the current network state
     public void checkInternet() {
-        ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         mMobile = connManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
         tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);

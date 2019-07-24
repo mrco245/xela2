@@ -2,10 +2,13 @@ package com.example.main;
 
 import android.annotation.SuppressLint;
 
+import android.net.ConnectivityManager;
+import android.os.Build;
 import org.json.JSONObject;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
@@ -15,7 +18,7 @@ import java.util.concurrent.TimeoutException;
 
 public class PhoneInfo extends MainActivity {
 
-    public static boolean ismobile;
+     boolean ismobile;
 
 
     public JSONObject displayPhoneInfo()
@@ -24,7 +27,6 @@ public class PhoneInfo extends MainActivity {
         try {
             phoneinfo.put("ssid", con.checkWifi());
             phoneinfo.put("wifi", isInternetAvailable());
-            phoneinfo.put("modbile-data", isMobileConnected());
             phoneinfo.put("device-info", deviceInfo());
             phoneinfo.put("sim", getSimSerial());
         }catch(Exception e)
@@ -35,12 +37,6 @@ public class PhoneInfo extends MainActivity {
         return phoneinfo;
     }
 
-    //checks to see if they have a mobile data plan
-    public boolean isMobileConnected() {
-
-        ismobile = mMobile.isAvailable();
-        return ismobile;
-    }
 
     //checks for usable internet connection
     public boolean isInternetAvailable() {
