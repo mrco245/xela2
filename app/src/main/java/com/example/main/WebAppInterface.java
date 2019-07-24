@@ -12,6 +12,7 @@ public class WebAppInterface{
         mContext = c;
     }
 
+    //defines the instances of the other classes to be used
     Sensors sData = new Sensors();
     PhoneInfo phoneInfo = new PhoneInfo();
     Time time = new Time();
