@@ -290,11 +290,6 @@ public class Sensors extends MainActivity implements SensorEventListener {
         Sensor sensor = event.sensor;
 
         if (sensor.getType() == sensor.TYPE_ACCELEROMETER) {
-            //Log.d(TAG, "onSensorChanged: X: " + event.values[0] + " Y: " + event.values[1] + " Z: " + event.values[2]);
-
-            //xValue.setText("xValue " + event.values[0]);
-            //yValue.setText("yValue " + event.values[1]);
-            //zValue.setText("zValue " + event.values[2]);
 
             try {
                 acceleration.put("x", event.values[0]);
@@ -305,9 +300,6 @@ public class Sensors extends MainActivity implements SensorEventListener {
                 e.printStackTrace();
             }
         } else if (sensor.getType() == sensor.TYPE_GYROSCOPE) {
-            // xGyroValue.setText("xGValue " + event.values[0]);
-            //yGyroValue.setText("yGValue " + event.values[1]);
-            //zGyroValue.setText("zGValue " + event.values[2]);
 
             try {
                 gyro.put("x", event.values[0]);
@@ -318,10 +310,6 @@ public class Sensors extends MainActivity implements SensorEventListener {
                 e.printStackTrace();
             }
         } else if (sensor.getType() == sensor.TYPE_MAGNETIC_FIELD) {
-            //xMagnoValue.setText("xMValue " + event.values[0]);
-            //yMagnoValue.setText("yMValue " + event.values[1]);
-            //zMagnoValue.setText("zMValue " + event.values[2]);
-
             try {
                 magnometer.put("x", event.values[0]);
                 magnometer.put("y", event.values[1]);
@@ -331,8 +319,6 @@ public class Sensors extends MainActivity implements SensorEventListener {
                 e.printStackTrace();
             }
         } else if (sensor.getType() == sensor.TYPE_PRESSURE) {
-            // pressure.setText("pressure " + event.values[0]);
-
             try {
 
                 Pressure.put("units", "kPa");
@@ -344,7 +330,6 @@ public class Sensors extends MainActivity implements SensorEventListener {
 
 
         } else if (sensor.getType() == sensor.TYPE_AMBIENT_TEMPERATURE) {
-            //temp.setText("Temp " + event.values[0]);
 
             try {
 
@@ -356,7 +341,6 @@ public class Sensors extends MainActivity implements SensorEventListener {
             }
 
         } else if (sensor.getType() == sensor.TYPE_RELATIVE_HUMIDITY) {
-            // humi.setText("Humi " + event.values[0]);
             try {
 
                 humidity.put("units", "%");
