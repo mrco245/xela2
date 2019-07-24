@@ -1,12 +1,5 @@
 package com.example.main;
 
-import android.view.Menu;
-import android.view.MenuItem;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -17,29 +10,28 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
-import android.net.Network;
 import android.net.NetworkInfo;
+import android.net.NetworkInfo.DetailedState;
 import android.net.Uri;
 import android.net.wifi.WifiInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.telephony.TelephonyManager;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
-
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-import static android.Manifest.permission.ACCESS_NETWORK_STATE;
-import static android.Manifest.permission.READ_CONTACTS;
-import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
-import static android.Manifest.permission.READ_PHONE_STATE;
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static android.Manifest.permission.*;
 
 public class MainActivity extends AppCompatActivity{
 
@@ -77,9 +69,9 @@ public class MainActivity extends AppCompatActivity{
     public static LocationManager locationManager;
     public static LocationListener listener;
     public static JSONObject gps = new JSONObject();
-    public static  Sensors sensors = new Sensors();
+    public static Sensors sensors = new Sensors();
 
-
+    String url = "file://" +Environment.getExternalStorageDirectory().getPath() +"/phone/welcome.html";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +81,7 @@ public class MainActivity extends AppCompatActivity{
         filter.addAction(getPackageName() + "android.net.conn.CONNECTIVITY_CHANGE");
        WifiConnector.WiFiConnectorListener list = new WifiConnector.WiFiConnectorListener() {
             @Override
-            public void onWiFiStateUpdate(WifiInfo wifiInfo, NetworkInfo.DetailedState detailedState) {
+            public void onWiFiStateUpdate(WifiInfo wifiInfo, DetailedState detailedState) {
 
             }
         };
@@ -117,6 +109,8 @@ public class MainActivity extends AppCompatActivity{
 
         webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
 
+        String url = "file://" +Environment.getExternalStorageDirectory().getPath() +"/phone/welcome.html";
+
         //Request the Permissions until all permissions are granted
         //Will check if the user disabled a permission, it will ask for only that permission
         do {
@@ -133,7 +127,7 @@ public class MainActivity extends AppCompatActivity{
                 //Opens up the correct webpage
                 try {
                     //opens up the webpage stored on the phones sd card
-                    webView.loadUrl("file:///sdcard/phone/welcome.html");
+                    webView.loadUrl(url);
 
                     //opens up the webpage stored in the assets folder in this project
                     //webView.loadUrl("file:///android_asset/madisons.html");
@@ -173,7 +167,7 @@ public class MainActivity extends AppCompatActivity{
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()){
-            case R.id.action_home : webView.loadUrl("file:///sdcard/phone/welcome.html"); break;
+            case R.id.action_home : webView.loadUrl(url); break;
             case R.id.action_refresh : webView.loadUrl(webView.getUrl()); break;
            // case R.id.action_fav : Toast.makeText(this, "Added To Favorite",Toast.LENGTH_SHORT).show(); break;
             //case R.id.action_back : if(webView.canGoBack()){ webView.goBack(); } break;
@@ -296,6 +290,9 @@ public class MainActivity extends AppCompatActivity{
         //configure_button();
         try {
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, listener);
+        } catch (SecurityException e)
+        {
+            e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }

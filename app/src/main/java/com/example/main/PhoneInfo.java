@@ -1,11 +1,6 @@
 package com.example.main;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
-import android.net.Network;
-import android.os.Build;
-
-import androidx.annotation.RequiresApi;
 
 import org.json.JSONObject;
 
@@ -42,11 +37,8 @@ public class PhoneInfo extends MainActivity {
 
     //checks to see if they have a mobile data plan
     public boolean isMobileConnected() {
-         ismobile = false;
 
-        if (mMobile.isAvailable()) {
-            ismobile = true;
-        }
+        ismobile = mMobile.isAvailable();
         return ismobile;
     }
 
@@ -67,8 +59,11 @@ public class PhoneInfo extends MainActivity {
             inetAddress = future.get(10000, TimeUnit.MILLISECONDS);
             future.cancel(true);
         } catch (InterruptedException e) {
+            e.printStackTrace();
         } catch (ExecutionException e) {
+            e.printStackTrace();
         } catch (TimeoutException e) {
+            e.printStackTrace();
         }
         return inetAddress != null && !inetAddress.equals("");
     }
@@ -91,8 +86,7 @@ public class PhoneInfo extends MainActivity {
     @SuppressLint("MissingPermission")
     public String getSimSerial() {
         //final TelephonyManager tm = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
-        String simSerial = "" + tm1.getSimSerialNumber();
-        return simSerial;
+        return "" + tm1.getSimSerialNumber();
     }
 
 

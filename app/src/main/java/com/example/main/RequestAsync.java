@@ -1,14 +1,15 @@
 package com.example.main;
 
 import android.os.AsyncTask;
+import android.os.Build;
 import android.util.Base64;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 import static com.example.main.MainActivity.json;
 
@@ -37,7 +38,7 @@ public class RequestAsync extends AsyncTask<String, String, String> {
                 return RequestHandler.sendPost("https://web1.xela.cc/week1/test1.php",encodedParams);*/
         } catch (Exception e) {
 
-            return new String("Exception: " + e.getMessage());
+            return "Exception: " + e.getMessage();
         }
     }
 
@@ -86,10 +87,8 @@ public class RequestAsync extends AsyncTask<String, String, String> {
     public String decode(String encodedData) {
         byte[] decodedJson = Base64.decode(encodedData.getBytes(), Base64.DEFAULT);
         String decodedString = null;
-        try {
-            decodedString = new String(decodedJson, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            decodedString = new String(decodedJson, StandardCharsets.UTF_8);
         }
         decodedString = decodedString.replace('_', '+');
         decodedString = decodedString.replace('-', '/');
@@ -108,7 +107,7 @@ public class RequestAsync extends AsyncTask<String, String, String> {
         if (responseCode == HttpURLConnection.HTTP_OK) { // connection ok
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String inputLine;
-            StringBuffer response = new StringBuffer();
+            StringBuilder response = new StringBuilder();
 
             while ((inputLine = in.readLine()) != null) {
                 response.append(inputLine);

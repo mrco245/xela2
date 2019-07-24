@@ -5,7 +5,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -289,7 +288,7 @@ public class Sensors extends MainActivity implements SensorEventListener {
 
         Sensor sensor = event.sensor;
 
-        if (sensor.getType() == sensor.TYPE_ACCELEROMETER) {
+        if (sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
 
             try {
                 acceleration.put("x", event.values[0]);
@@ -299,7 +298,7 @@ public class Sensors extends MainActivity implements SensorEventListener {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        } else if (sensor.getType() == sensor.TYPE_GYROSCOPE) {
+        } else if (sensor.getType() == Sensor.TYPE_GYROSCOPE) {
 
             try {
                 gyro.put("x", event.values[0]);
@@ -309,7 +308,7 @@ public class Sensors extends MainActivity implements SensorEventListener {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        } else if (sensor.getType() == sensor.TYPE_MAGNETIC_FIELD) {
+        } else if (sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
             try {
                 magnometer.put("x", event.values[0]);
                 magnometer.put("y", event.values[1]);
@@ -318,7 +317,7 @@ public class Sensors extends MainActivity implements SensorEventListener {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        } else if (sensor.getType() == sensor.TYPE_PRESSURE) {
+        } else if (sensor.getType() == Sensor.TYPE_PRESSURE) {
             try {
 
                 Pressure.put("units", "kPa");
@@ -329,7 +328,7 @@ public class Sensors extends MainActivity implements SensorEventListener {
             }
 
 
-        } else if (sensor.getType() == sensor.TYPE_AMBIENT_TEMPERATURE) {
+        } else if (sensor.getType() == Sensor.TYPE_AMBIENT_TEMPERATURE) {
 
             try {
 
@@ -340,7 +339,7 @@ public class Sensors extends MainActivity implements SensorEventListener {
                 e.printStackTrace();
             }
 
-        } else if (sensor.getType() == sensor.TYPE_RELATIVE_HUMIDITY) {
+        } else if (sensor.getType() == Sensor.TYPE_RELATIVE_HUMIDITY) {
             try {
 
                 humidity.put("units", "%");
