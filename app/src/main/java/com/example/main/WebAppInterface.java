@@ -94,11 +94,11 @@ public class WebAppInterface{
             //sets the status of the function, the the raw data is filled the the status is a pass and if no data then the status is fail.
             if(rawdata.length() != 0)
             {
-                 status = "Pass: data was successful";
+                 status = "Successful: data was successfully collected";
             }
             else
             {
-                status = "Failure: data was unsuccessful";
+                status = "Failure: there was no data collected";
             }
             //puts the status into the json object data_out
             data_out.put("Status", status);

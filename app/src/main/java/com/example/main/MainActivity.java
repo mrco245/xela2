@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity{
     public static LocationListener listener;
     public static JSONObject gps = new JSONObject();
     public static Sensors sensors = new Sensors();
+    public static USBColor test = new USBColor();
 
     String url = "file://" +Environment.getExternalStorageDirectory().getPath() +"/phone/welcome.html";
     //String url = "file:///android_asset/madisons.html";
@@ -159,19 +160,20 @@ public class MainActivity extends AppCompatActivity{
                     e.printStackTrace();
                 }
             }
-
-/**
-            //Starts and registers the sensor listener
-            StartSensors();
-            //Starts the gps location listener
-            startLocationListener();
-            //checks the network state
-            checkInternet(); **/
         }
 
 
 
     }
+
+    @Override
+    protected void onDestroy() {
+        test.releaseUsb();
+        unregisterReceiver(mUsbReceiver);
+        unregisterReceiver(mUsbDeviceReceiver);
+        super.onDestroy();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -193,9 +195,6 @@ public class MainActivity extends AppCompatActivity{
         switch (item.getItemId()){
             case R.id.action_home : webView.loadUrl(url); break;
             case R.id.action_refresh : webView.loadUrl(webView.getUrl()); break;
-           // case R.id.action_fav : Toast.makeText(this, "Added To Favorite",Toast.LENGTH_SHORT).show(); break;
-            //case R.id.action_back : if(webView.canGoBack()){ webView.goBack(); } break;
-           // case R.id.action_forward : if(webView.canGoForward()){ webView.goForward(); } break;
         }
         return super.onOptionsItemSelected(item);
     }

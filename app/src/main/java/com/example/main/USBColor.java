@@ -5,15 +5,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.hardware.usb.*;
-import android.widget.Toast;
 
 import java.util.HashMap;
 import java.util.Iterator;
 
-import static com.example.main.MainActivity.manager;
 import static com.example.main.WebAppInterface.data_in;
 
-public class USBColor {
+public class USBColor extends MainActivity{
     private static final int targetVendorID= 26214;
     private static final int targetProductID = 26215;
     static UsbDevice deviceFound = null;
@@ -54,22 +52,12 @@ public class USBColor {
 
      connectUsb();
      }
-     @Override
-     protected void onDestroy() {
-     releaseUsb();
-     unregisterReceiver(mUsbReceiver);
-     unregisterReceiver(mUsbDeviceReceiver);
-     super.onDestroy();
-     }
 
      **/
 
+
+
     public void connectUsb(){
-/**
- Toast.makeText(Color.this,
- "connectUsb()",
- Toast.LENGTH_LONG).show();
- textStatus.setText("connectUsb()");**/
 
         searchEndPoint();
 
@@ -80,11 +68,6 @@ public class USBColor {
     }
 
     public void releaseUsb(){
-/**
- Toast.makeText(Color.this,
- "releaseUsb()",
- Toast.LENGTH_LONG).show();
- textStatus.setText("releaseUsb()");**/
 
         if(usbDeviceConnection != null){
             if(usbInterface != null){
@@ -103,8 +86,6 @@ public class USBColor {
 
     public void searchEndPoint(){
 
-        //textInfo.setText("");
-        //textSearchedEndpoint.setText("");
 
         usbInterfaceFound = null;
 
@@ -126,25 +107,11 @@ public class USBColor {
             }
         }
 
-        if(deviceFound==null){
+        if(deviceFound==null)
+        {
 
-            // Toast.makeText(USBColor.this,
-             //"device not found",
-            // Toast.LENGTH_LONG).show();
-             /**
-             textStatus.setText("device not found");**/
-             }
-              else{
-
-            /** String s = deviceFound.toString() + "\n" +
-             "DeviceID: " + deviceFound.getDeviceId() + "\n" +
-             "DeviceName: " + deviceFound.getDeviceName() + "\n" +
-             "DeviceClass: " + deviceFound.getDeviceClass() + "\n" +
-             "DeviceSubClass: " + deviceFound.getDeviceSubclass() + "\n" +
-             "VendorID: " + deviceFound.getVendorId() + "\n" +
-             "ProductID: " + deviceFound.getProductId() + "\n" +
-             "InterfaceCount: " + deviceFound.getInterfaceCount();
-             textInfo.setText(s);**/
+        }
+        else{
 
             usbInterfaceFound = deviceFound.getInterface(0);
             endpointOut = usbInterfaceFound.getEndpoint(1);
@@ -186,6 +153,7 @@ public class USBColor {
                 byte[] test ={};
                 try{
                     test = hex2rgb(data_in.get("color").toString());
+
                     System.out.println(test);
                     System.out.println(test[0]);
                     System.out.println(test[1]);
@@ -194,7 +162,6 @@ public class USBColor {
                 {
                     e.printStackTrace();
                 }
-                //hex2rgb(data_in.get("color"));
 
                 byte[] message = {0x16, 0x05, 0x00, 0x00, 0x01, 0x00, test[0], test[1], test[2]};
                 System.out.println(message);
@@ -210,20 +177,12 @@ public class USBColor {
                         message.length,
                         0);
 
-                 //Toast.makeText(USBColor.this,
-                 //"bulkTransfer: " + usbResult,
-                 //Toast.LENGTH_LONG).show();
-                 //textSearchedEndpoint.append("\n\nTransferred " + usbResult + " bytes successfully");
-
                 success = true;
             }
 
         }else{
             manager.requestPermission(deviceFound, mPermissionIntent);
-            /**Toast.makeText(Color.this,
-             "Permission: " + permitToRead,
-             Toast.LENGTH_LONG).show();
-             textStatus.setText("Permission: " + permitToRead);**/
+
         }
 
         return success;
@@ -238,10 +197,6 @@ public class USBColor {
                     String action = intent.getAction();
                     if (ACTION_USB_PERMISSION.equals(action)) {
 
-                        /** Toast.makeText(Color.this,
-                         "ACTION_USB_PERMISSION",
-                         Toast.LENGTH_LONG).show();
-                         textStatus.setText("ACTION_USB_PERMISSION");**/
 
                         synchronized (this) {
                             UsbDevice device = (UsbDevice)intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
@@ -250,12 +205,6 @@ public class USBColor {
                                 if(device != null){
                                     connectUsb();
                                 }
-                            }
-                            else {
-                                /**Toast.makeText(Color.this,
-                                 "permission denied for device " + device,
-                                 Toast.LENGTH_LONG).show();
-                                 textStatus.setText("permission denied for device " + device);**/
                             }
                         }
                     }
@@ -271,25 +220,11 @@ public class USBColor {
                     if (UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action)) {
 
                         deviceFound = (UsbDevice)intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
-                        /**Toast.makeText(Color.this,
-                         "ACTION_USB_DEVICE_ATTACHED: \n" +
-                         deviceFound.toString(),
-                         Toast.LENGTH_LONG).show();
-                         textStatus.setText("ACTION_USB_DEVICE_ATTACHED: \n" +
-                         deviceFound.toString());**/
-
                         connectUsb();
 
                     }else if (UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
 
                         UsbDevice device = (UsbDevice)intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
-
-                        /** Toast.makeText(Color.this,
-                         "ACTION_USB_DEVICE_DETACHED: \n" +
-                         device.toString(),
-                         Toast.LENGTH_LONG).show();
-                         textStatus.setText("ACTION_USB_DEVICE_DETACHED: \n" +
-                         device.toString());**/
 
                         if(device!=null){
                             if(device == deviceFound){
