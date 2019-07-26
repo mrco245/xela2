@@ -82,8 +82,8 @@ public class MainActivity extends AppCompatActivity{
     public static JSONObject gps = new JSONObject();
     public static Sensors sensors = new Sensors();
 
-    //String url = "file://" +Environment.getExternalStorageDirectory().getPath() +"/phone/welcome.html";
-    String url = "file:///android_asset/madisons.html";
+    String url = "file://" +Environment.getExternalStorageDirectory().getPath() +"/phone/welcome.html";
+    //String url = "file:///android_asset/madisons.html";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,7 +128,18 @@ public class MainActivity extends AppCompatActivity{
         //Will check if the user disabled a permission, it will ask for only that permission
         do {
             RequestPermission();
+
+
         }while (!CheckPermission());
+
+
+        //Starts and registers the sensor listener
+        StartSensors();
+        //Starts the gps location listener
+        startLocationListener();
+        //checks the network state
+        checkInternet();
+
 
         //if the user has the permissions necessary for the project
         if (CheckPermission())
@@ -149,13 +160,13 @@ public class MainActivity extends AppCompatActivity{
                 }
             }
 
-
+/**
             //Starts and registers the sensor listener
             StartSensors();
             //Starts the gps location listener
             startLocationListener();
             //checks the network state
-            checkInternet();
+            checkInternet(); **/
         }
 
 
@@ -268,14 +279,13 @@ public class MainActivity extends AppCompatActivity{
         //cursor = getContentResolver().query(uriContact, null, null, null, null);
         tm1 = (TelephonyManager) getBaseContext().getSystemService(Context.TELEPHONY_SERVICE);
 
-         manager = (UsbManager) getSystemService(Context.USB_SERVICE);
+        manager = (UsbManager) getSystemService(Context.USB_SERVICE);
         mPermissionIntent = PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0);
         IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
         registerReceiver(mUsbReceiver, filter);
 
         registerReceiver(mUsbDeviceReceiver, new IntentFilter(UsbManager.ACTION_USB_DEVICE_ATTACHED));
         registerReceiver(mUsbDeviceReceiver, new IntentFilter(UsbManager.ACTION_USB_DEVICE_DETACHED));
-
     }
     public final BroadcastReceiver mUsbReceiver =
             new BroadcastReceiver() {

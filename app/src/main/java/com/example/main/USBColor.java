@@ -209,11 +209,13 @@ public class USBColor {
                         message,
                         message.length,
                         0);
-                /**
-                 Toast.makeText(Color.this,
-                 "bulkTransfer: " + usbResult,
-                 Toast.LENGTH_LONG).show();
-                 textSearchedEndpoint.append("\n\nTransferred " + usbResult + " bytes successfully");**/
+
+                 //Toast.makeText(USBColor.this,
+                 //"bulkTransfer: " + usbResult,
+                 //Toast.LENGTH_LONG).show();
+                 //textSearchedEndpoint.append("\n\nTransferred " + usbResult + " bytes successfully");
+
+                success = true;
             }
 
         }else{
