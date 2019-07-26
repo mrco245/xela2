@@ -40,6 +40,7 @@ public class WebAppInterface{
                     e.printStackTrace();
                 }
                 System.out.println(data_in);
+
                 rawdata = data_in;
 
                 usbColor.connectUsb();

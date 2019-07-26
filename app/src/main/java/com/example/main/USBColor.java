@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.hardware.usb.*;
 
+import java.net.Inet4Address;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -154,6 +155,9 @@ public class USBColor extends MainActivity{
                 try{
                     test = hex2rgb(data_in.get("color").toString());
 
+                   // byte led = (byte) Integer.parseInt(data_in.get("led").toString());
+
+
                     System.out.println(test);
                     System.out.println(test[0]);
                     System.out.println(test[1]);
@@ -163,7 +167,8 @@ public class USBColor extends MainActivity{
                     e.printStackTrace();
                 }
 
-                byte[] message = {0x16, 0x05, 0x00, 0x00, 0x01, 0x00, test[0], test[1], test[2]};
+
+                byte[] message = {0x15, 0x05, 0x00, 0x00, 0x00, test[0], test[1], test[2]};
                 System.out.println(message);
                 //String messageStr = "\0x15\0x04\0x00\0x00\0x00\0x00\0x00\0xFF";
 
