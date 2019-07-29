@@ -83,7 +83,7 @@ public class WebAppInterface{
         }
 
         //the json object that has the raw data from the sensors, gps location, time, etc.
-        System.out.println(rawdata.toString());
+        //System.out.println(rawdata.toString());
 
         try
         {
@@ -112,7 +112,7 @@ public class WebAppInterface{
         }
 
         //json that has the action, time, status, and raw data
-        System.out.println(data_out.toString());
+       // System.out.println(data_out.toString());
 
         //returns the json object back to the javascript handler on the webpage
         return data_out.toString();

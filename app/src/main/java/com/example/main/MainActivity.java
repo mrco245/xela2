@@ -91,8 +91,8 @@ public class MainActivity extends AppCompatActivity{
     public static Sensors sensors = new Sensors();
     public static USBColor test = new USBColor();
 
-    //String url = "file://" +Environment.getExternalStorageDirectory().getPath() +"/phone/welcome.html";
-    String url = "file:///android_asset/madisons.html";
+    String url = "file://" +Environment.getExternalStorageDirectory().getPath() +"/phone/welcome.html";
+    //String url = "file:///android_asset/madisons.html";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

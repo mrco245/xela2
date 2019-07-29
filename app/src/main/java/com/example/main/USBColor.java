@@ -163,11 +163,11 @@ public class USBColor extends MainActivity{
 
                     if(data_in.get("command").toString().equals("single")) {
 
-                        if (data_in.get("led").toString().equals("1")) {
+                        if (data_in.get("ledStr").toString().equals("1")) {
                             led = 0x01;
-                            message = new byte[]{0x16, 0x05, 0x00, 0x00, led, 0x00, test[0], test[1], test[2]};
+                            message = new byte[]{0x11, 0x06, 0x00, 0x00, led, 0x00, test[0], test[1], test[2]};
 
-                        } else if (data_in.get("led").toString().equals("4")) {
+                        } else if (data_in.get("ledStr").toString().equals("4")) {
                             led = 0x04;
                             message = new byte[]{0x16, 0x05, 0x00, 0x00, led, 0x00, test[0], test[1], test[2]};
 
@@ -177,13 +177,6 @@ public class USBColor extends MainActivity{
                     {
                         message = new byte[]{0x15, 0x04, 0x00, 0x00, 0x00, test[0], test[1], test[2]};
                     }
-
-                    System.out.println(test);
-                    System.out.println(test[0]);
-                    System.out.println(test[1]);
-                    System.out.println(test[2]);
-
-                    System.out.println(led);
 
                 }catch (Exception e)
                 {
@@ -212,6 +205,9 @@ public class USBColor extends MainActivity{
             manager.requestPermission(deviceFound, mPermissionIntent);
 
         }
+
+
+
 
         return success;
     }
