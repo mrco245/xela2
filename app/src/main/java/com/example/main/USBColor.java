@@ -12,6 +12,7 @@ import android.hardware.usb.UsbManager;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Objects;
 
 import static com.example.main.WebAppInterface.data_in;
 
@@ -154,28 +155,84 @@ public class USBColor extends MainActivity{
                 usbDeviceConnection.claimInterface(usbInterfaceFound, true);
 
                 int usbResult;
+                String command= "";
+                String strip = "";
+                String LED = "";
+
                 byte[] test ={};
-                byte led = 0x00;
+                try {
+                    command = data_in.get("command").toString();
+                    strip = data_in.get("ledStr").toString();
+                    LED = data_in.get("sololed").toString();
+
+                }catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+                byte ledStrip = 0x00;
+                byte led_solo = 0x04;
+
                 byte[] message = {};
 
                 try{
                     test = hex2rgb(data_in.get("color").toString());
 
-                    if(data_in.get("command").toString().equals("single")) {
+                    if(command.equals("single")) {
 
-                        if (data_in.get("ledStr").toString().equals("1")) {
-                            led = 0x01;
-                            message = new byte[]{0x11, 0x06, 0x00, 0x00, led, 0x00, test[0], test[1], test[2]};
-
-                        } else if (data_in.get("ledStr").toString().equals("4")) {
-                            led = 0x04;
-                            message = new byte[]{0x16, 0x05, 0x00, 0x00, led, 0x00, test[0], test[1], test[2]};
-
+                        if (strip.equals("1")) {
+                            ledStrip = 0x01;
+                            //message = new byte[]{0x16, 0x05, 0x00, 0x00, ledStrip, 0x00, test[0], test[1], test[2]};
+                        } else if (strip.equals("4")) {
+                            ledStrip = 0x04;
+                            //message = new byte[]{0x16, 0x05, 0x00, 0x00, ledStrip, 0x00, test[0], test[1], test[2]};
                         }
+                        message = new byte[]{0x16, 0x05, 0x00, 0x00, ledStrip, 0x00, test[0], test[1], test[2]};
+
                     }
-                    else if(data_in.get("command").toString().equals("multi"))
+                    else if(command.equals("multi"))
                     {
                         message = new byte[]{0x15, 0x04, 0x00, 0x00, 0x00, test[0], test[1], test[2]};
+                    }
+                    else if(command.equals("solo"))
+                    {
+                        if(strip.equals("1"))
+                        {
+                            ledStrip = 0x01;
+
+                            if(LED.equals("1"))
+                            {
+                                led_solo = 0x01;
+                                //message = new byte[]{0x11, 0x06, 0x00, 0x00, ledStrip, led_solo, 0x00, test[0], test[1], test[2]};
+
+                            }
+                            if(LED.equals("4"))
+                            {
+                                led_solo = 0x04;
+                                //message = new byte[]{0x11, 0x06, 0x00, 0x00, ledStrip, led_solo, 0x00, test[0], test[1], test[2]};
+                            }
+
+                            //message = new byte[]{0x11, 0x06, 0x00, 0x00, ledStrip, led_solo, 0x00, test[0], test[1], test[2]};
+
+                        }
+                        if(strip.equals("4"))
+                        {
+                            ledStrip = 0x04;
+
+                            if(LED.equals("1"))
+                            {
+                                led_solo = 0x01;
+                                //message = new byte[]{0x11, 0x06, 0x00, 0x00, ledStrip, led_solo, 0x00, test[0], test[1], test[2]};
+
+                            }
+                            if(LED.equals("4"))
+                            {
+                                led_solo = 0x04;
+                                //message = new byte[]{0x11, 0x06, 0x00, 0x00, ledStrip, led_solo, 0x00, test[0], test[1], test[2]};
+                            }
+                            //message = new byte[]{0x11, 0x06, 0x00, 0x00, ledStrip, led_solo, 0x00, test[0], test[1], test[2]};
+
+                        }
+                        message = new byte[]{0x11, 0x06, 0x00, 0x00, ledStrip, led_solo, 0x00, test[0], test[1], test[2]};
                     }
 
                 }catch (Exception e)

@@ -10,20 +10,33 @@
 {
 			var list1 = document.getElementById('command');
             var list2 = document.getElementById('led-number');
+            var list3 = document.getElementById('led');
             var list1SelectedValue = list1.options[list1.selectedIndex].value;
 
 			if(list1SelectedValue == 'single')
 			{
+			    list3.options.length=0;
 			    list2.options.length=0;
 			    list2.options[0] = new Option('--Select--', '');
-                list2.options[1] = new Option('Led 1', '1');
-                list2.options[2] = new Option('Led 4', '4');
+                list2.options[1] = new Option('Strip 1', '1');
+                list2.options[2] = new Option('Strip 4', '4');
 			}
 			else if(list1SelectedValue == 'multi')
 			{
-			   list2.options.length=0;
+			    list3.options.length=0;
+			    list2.options.length=0;
+			}
+			else if(list1SelectedValue == 'solo')
+			{
+			    list2.options.length=0;
 			    list2.options[0] = new Option('--Select--', '');
-               list2.options[1] = new Option('All', 'All');
+                list2.options[1] = new Option('Strip 1', '1');
+                list2.options[2] = new Option('Strip 4', '4');
+
+                list3.options.length=0;
+			    list3.options[0] = new Option('--Select--', '');
+                list3.options[1] = new Option('Led 1', '1');
+                list3.options[2] = new Option('Led 4', '4');
 			}
 }
     </script>
@@ -61,12 +74,16 @@
             <option>_--Select--</option>
             <option value="single">Single Strip One Color</option>
             <option value="multi">All Strips One Color</option>
+            <option value="solo">A single led on one strip</option>
         </select>
 
         <select id="led-number">
            <!--<option value="1">led 1</option>
            <option value = "4">led 4</option>-->
-       </select>
+        </select>
+        <select id="led">
+
+        </select>
 
 
         <input type="button" id= "set-color" value="set color" onclick="sendAction('set-color')"/>
@@ -124,12 +141,13 @@
 function sendAction(action)
 {
     var color = document.getElementById("favcolor").value;
-    var led = document.getElementById("led-number").value;
+    var ledStr = document.getElementById("led-number").value;
     var command = document.getElementById("command").value;
+    var sololed = document.getElementById("led").value;
 
 
 
-    var data_in = {"color" : color, "led":led, "command": command};
+    var data_in = {"color" : color, "ledStr":ledStr, "command": command, "sololed":sololed};
 
     var data_out = xelaHandler.xelaHandler(action, JSON.stringify(data_in));
     //var data = xelaHandler.xelaHandler(action);
