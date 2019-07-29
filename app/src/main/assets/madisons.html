@@ -33,7 +33,20 @@
     <form>
         Select your favorite color:
         <input type="color" name="favcolor" id="favcolor" value="#ff0000">
+
+        <select id="command">
+            <option value="single">Single Strip One Color</option>
+            <option value="multi">All Strips One Color</option>
+        </select>
+
+        <select id="led-number">
+           <option value="1">led 1</option>
+           <option value = "4">led 4</option>
+       </select>
+
+
         <input type="button" id= "set-color" value="set color" onclick="sendAction('set-color')"/>
+
     </form>
 </div>
 
@@ -87,7 +100,12 @@
 function sendAction(action)
 {
     var color = document.getElementById("favcolor").value;
-    var data_in = {"color" : color};
+    var led = document.getElementById("led-number").value;
+    var command = document.getElementById("command").value;
+
+
+
+    var data_in = {"color" : color, "led":led, "command": command};
 
     var data_out = xelaHandler.xelaHandler(action, JSON.stringify(data_in));
     //var data = xelaHandler.xelaHandler(action);

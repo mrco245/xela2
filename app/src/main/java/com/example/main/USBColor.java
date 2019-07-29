@@ -152,23 +152,43 @@ public class USBColor extends MainActivity{
 
                 int usbResult;
                 byte[] test ={};
+                byte led = 0x00;
+                byte[] message = {};
+
                 try{
                     test = hex2rgb(data_in.get("color").toString());
 
-                   // byte led = (byte) Integer.parseInt(data_in.get("led").toString());
+                    if(data_in.get("command").toString().equals("single")) {
 
+                        if (data_in.get("led").toString().equals("1")) {
+                            led = 0x01;
+                            message = new byte[]{0x16, 0x05, 0x00, 0x00, led, 0x00, test[0], test[1], test[2]};
+
+                        } else if (data_in.get("led").toString().equals("4")) {
+                            led = 0x04;
+                            message = new byte[]{0x16, 0x05, 0x00, 0x00, led, 0x00, test[0], test[1], test[2]};
+
+                        }
+                    }
+                    else if(data_in.get("command").toString().equals("multi"))
+                    {
+                        message = new byte[]{0x15, 0x04, 0x00, 0x00, 0x00, test[0], test[1], test[2]};
+                    }
 
                     System.out.println(test);
                     System.out.println(test[0]);
                     System.out.println(test[1]);
                     System.out.println(test[2]);
+
+                    System.out.println(led);
+
                 }catch (Exception e)
                 {
                     e.printStackTrace();
                 }
 
 
-                byte[] message = {0x15, 0x05, 0x00, 0x00, 0x00, test[0], test[1], test[2]};
+                //byte[] message = {0x16,0x05,0x00, 0x00, led, 0x00, test[0], test[1], test[2]};
                 System.out.println(message);
                 //String messageStr = "\0x15\0x04\0x00\0x00\0x00\0x00\0x00\0xFF";
 
