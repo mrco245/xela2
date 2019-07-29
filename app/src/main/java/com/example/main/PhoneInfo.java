@@ -2,13 +2,10 @@ package com.example.main;
 
 import android.annotation.SuppressLint;
 
-import android.net.ConnectivityManager;
-import android.os.Build;
 import org.json.JSONObject;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
