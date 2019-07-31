@@ -173,9 +173,13 @@ public class USBColor extends MainActivity{
                 byte led_solo = 0x04;
 
                 byte[] message = {};
+                byte[] message1 = {};
 
                 try{
                     test = hex2rgb(data_in.get("color").toString());
+                    //message = new byte[] {0x16, 0x05, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, (byte)(0xff)};
+                    //message1 = new byte[] {0x16, 0x05, 0x00, 0x00, 0x04, 0x00, 0x00, 0x00, (byte)(0xf0)};
+
 
                     if(command.equals("single")) {
 
@@ -202,7 +206,6 @@ public class USBColor extends MainActivity{
                             if(LED.equals("1"))
                             {
                                 led_solo = 0x01;
-                                //message = new byte[]{0x11, 0x06, 0x00, 0x00, ledStrip, led_solo, 0x00, test[0], test[1], test[2]};
 
                             }
                             if(LED.equals("4"))
@@ -255,6 +258,7 @@ public class USBColor extends MainActivity{
                         message.length,
                         0);
 
+
                 success = true;
             }
 
@@ -262,9 +266,6 @@ public class USBColor extends MainActivity{
             manager.requestPermission(deviceFound, mPermissionIntent);
 
         }
-
-
-
 
         return success;
     }

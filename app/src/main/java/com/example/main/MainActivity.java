@@ -1,5 +1,6 @@
 package com.example.main;
 
+import android.Manifest;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -21,10 +22,13 @@ import android.net.wifi.WifiInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Message;
 import android.telephony.TelephonyManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.PermissionRequest;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
@@ -43,6 +47,7 @@ import static android.Manifest.permission.ACCESS_NETWORK_STATE;
 import static android.Manifest.permission.READ_CONTACTS;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.READ_PHONE_STATE;
+import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static com.example.main.USBColor.deviceFound;
 
@@ -113,11 +118,21 @@ public class MainActivity extends AppCompatActivity{
         webView = (WebView) findViewById(R.id.WebView1);
 
         //open browser inside application
-        webView.setWebViewClient(new MyBrowser());
+        webView.setWebChromeClient(new MyBrowser()
+        {
+            @Override
+            public void onPermissionRequest(final PermissionRequest request)
+            {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    request.grant(request.getResources());
+                }
+            }
+            });
         webView.getSettings().setLoadsImagesAutomatically(true);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setAllowFileAccess(true);
-
+        webView.getSettings().setSupportMultipleWindows(true);
+        webView.getSettings().setAllowContentAccess(true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             webView.getSettings().setAllowFileAccessFromFileURLs(true);
         }
@@ -125,6 +140,8 @@ public class MainActivity extends AppCompatActivity{
         webView.getSettings().setAllowContentAccess(true);
         webView.getSettings().setBuiltInZoomControls(true);
         webView.getSettings().setDisplayZoomControls(false);
+
+
 
         //adds the javascipt functionality and names the handler
         webView.addJavascriptInterface(new WebAppInterface(this), "xelaHandler");
@@ -217,21 +234,21 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
-    public class MyBrowser extends WebViewClient
-    {
-        @Override
+    public class MyBrowser extends WebChromeClient {
+        //@Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
 
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
             view.getContext().startActivity(intent);
             return true;
         }
+
     }
 
     //Requests the required permissions from the user at runtime
     private void RequestPermission()
     {
-        ActivityCompat.requestPermissions(this, new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE, ACCESS_NETWORK_STATE, ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION, READ_PHONE_STATE, READ_CONTACTS}, RequestPermissionCode);
+        ActivityCompat.requestPermissions(this, new String[]{WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE, ACCESS_NETWORK_STATE, ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION, READ_PHONE_STATE, READ_CONTACTS, RECORD_AUDIO}, RequestPermissionCode);
     }
 
     @Override
@@ -247,8 +264,9 @@ public class MainActivity extends AppCompatActivity{
                     boolean CoursePermission = grantResults[4] == PackageManager.PERMISSION_GRANTED;
                     boolean PhonePermission = grantResults[5] == PackageManager.PERMISSION_GRANTED;
                     boolean AccountPermission = grantResults[6] == PackageManager.PERMISSION_GRANTED;
+                    boolean AudioRecord = grantResults[7] == PackageManager.PERMISSION_GRANTED;
 
-                    if (StoragePermission && ReadPermission && NetworkPermission && FinePermission && CoursePermission && PhonePermission &&  AccountPermission) {
+                    if (StoragePermission && ReadPermission && NetworkPermission && FinePermission && CoursePermission && PhonePermission &&  AccountPermission &&AudioRecord) {
                         Toast.makeText(this, "Permission is Granted", Toast.LENGTH_SHORT).show();
 
                     } else {
@@ -269,12 +287,13 @@ public class MainActivity extends AppCompatActivity{
         int result4 = ContextCompat.checkSelfPermission(getApplicationContext(), ACCESS_COARSE_LOCATION);
         int result5 = ContextCompat.checkSelfPermission(getApplicationContext(), READ_PHONE_STATE);
         int result6 = ContextCompat.checkSelfPermission(getApplicationContext(), READ_CONTACTS);
+        int result7 = ContextCompat.checkSelfPermission(getApplicationContext(),RECORD_AUDIO);
 
 
         return result == PackageManager.PERMISSION_GRANTED &&
                 result1 == PackageManager.PERMISSION_GRANTED && result2 == PackageManager.PERMISSION_GRANTED &&
                 result3 == PackageManager.PERMISSION_GRANTED &&
-                result4 == PackageManager.PERMISSION_GRANTED && result5==PackageManager.PERMISSION_GRANTED && result6==PackageManager.PERMISSION_GRANTED;
+                result4 == PackageManager.PERMISSION_GRANTED && result5==PackageManager.PERMISSION_GRANTED && result6==PackageManager.PERMISSION_GRANTED && result7==PackageManager.PERMISSION_GRANTED;
     }
 
     //Starts and gets the current network state

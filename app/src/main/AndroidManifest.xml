@@ -20,7 +20,9 @@
 
     <uses-permission android:name="android.permission.STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-feature android:name="android.media"/>
 
     <uses-feature android:name="android.hardware.usb"/>
 

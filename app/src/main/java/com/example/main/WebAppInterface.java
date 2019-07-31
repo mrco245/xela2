@@ -47,6 +47,19 @@ public class WebAppInterface{
 
 
                 break;
+            case "speech-to-text":
+                try {
+                    data_in = new JSONObject(json);
+                }catch(Exception e)
+                {
+                    e.printStackTrace();
+                }
+                System.out.println(data_in);
+
+                rawdata = data_in;
+                break;
+
+
             case "all-data":
                 //sends all the sensor and gps data to the web server
                 rawdata = sData.sendALL();
@@ -112,7 +125,7 @@ public class WebAppInterface{
         }
 
         //json that has the action, time, status, and raw data
-       // System.out.println(data_out.toString());
+        System.out.println(data_out.toString());
 
         //returns the json object back to the javascript handler on the webpage
         return data_out.toString();
