@@ -9,6 +9,8 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import static java.lang.Thread.sleep;
+
 public class WebAppInterface extends MainActivity{
     public Context mContext;
 
@@ -32,6 +34,7 @@ public class WebAppInterface extends MainActivity{
     Text2Speech t2s = new Text2Speech();
     public static  Speech2Text s2t = new Speech2Text();
     public static  String text2beSpoken;
+    public static  String spokenText;
 
     @JavascriptInterface
     public String xelaHandler(String json)
@@ -58,12 +61,62 @@ public class WebAppInterface extends MainActivity{
         {
             switch(action) {
 
+                case "get-ssid":
+                    rawdata = con.sendSSID();
+                    break;
+                case "scan-ssids":
+                    rawdata = con.scanSSID();
+                    break;
+                case "connect-phone":
+                    String ssid = "";
+                    String password = "";
+                    try {
+                        ssid = data_in.get("ssid").toString();
+                        password = data_in.get("password").toString();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    String log = con.connectToWiFi(1, ssid, password).toString();
+
+                    try {
+                        rawdata.put("Wifi", log);
+                        rawdata.put("data", data);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
+                    break;
+
+
+
                 case "text2speech":
                     try {
                         text2beSpoken = data_in.get("Text2Speech").toString();
                         t2s.ConvertTextToSpeech(text2beSpoken);
                         rawdata.put("Speech Spoken", true);
 
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+
+                case "speech2text":
+                    //need to implement
+                    break;
+
+                case "set-speakervoice":
+                    String language = null;
+                    try {
+                        language = data_in.get("Language").toString();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    t2s.setSpeechVoice(language);
+
+                    try {
+                        rawdata.put("Language", language);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

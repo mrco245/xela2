@@ -41,7 +41,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".Speech2Text">
-
+            <intent-filter>
+                <category android:name="android.intent.cagergory.DEFAULT"/>
+            </intent-filter>
         </activity>
     </application>
 

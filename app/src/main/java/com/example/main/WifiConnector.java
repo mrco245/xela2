@@ -3,14 +3,26 @@ package com.example.main;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.net.NetworkInfo;
+import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.List;
+
+
 //import android.support.annotation.CheckResult;
 
 public class WifiConnector {
+
+    public static JSONObject wifi = new JSONObject();
+    public static JSONObject data = new JSONObject();
+
+
 
     private static final String TAG = WifiConnector.class.getSimpleName();
     public static final String NO_WIFI = quoted("<unknown ssid>");
@@ -30,6 +42,43 @@ public class WifiConnector {
         mWifiIntentFilter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
         mWifiManager = (WifiManager) context.getSystemService(context.WIFI_SERVICE);
         mWifiConnectorListener = wifiConnectorListener;
+    }
+
+    public JSONObject sendSSID()
+    {
+        JSONObject json = new JSONObject();
+        String ssid = checkWifi();
+        try {
+            wifi.put("Current SSID", ssid);
+            data.put("Wifi", wifi);
+            json.put("data", data);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return json;
+    }
+
+    public JSONObject scanSSID()
+    {
+        JSONObject json = new JSONObject();
+        StringBuilder sb = new StringBuilder();
+        List<ScanResult> wifiList = mWifiManager.getScanResults();
+
+        for (int i = 0; i < wifiList.size()-1; i++){
+            sb.append((wifiList.get(i)).SSID);
+            sb.append(", ");
+        }
+        sb.append((wifiList.get(wifiList.size()-1)).SSID);
+
+        String list = sb.toString();
+        try {
+            wifi.put("Available SSID's", list);
+            data.put("Wifi", wifi);
+            json.put("data", data);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return json;
     }
 
     public String checkWifi()

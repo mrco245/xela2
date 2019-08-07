@@ -1,8 +1,6 @@
 package com.example.main;
 
-import android.Manifest;
 import android.app.PendingIntent;
-import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -23,10 +21,6 @@ import android.net.wifi.WifiInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Message;
-import android.speech.RecognitionListener;
-import android.speech.RecognizerIntent;
-import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
 import android.telephony.TelephonyManager;
 import android.util.Log;
@@ -37,8 +31,6 @@ import android.webkit.JavascriptInterface;
 import android.webkit.PermissionRequest;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -49,7 +41,6 @@ import androidx.core.content.ContextCompat;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.Locale;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
@@ -62,9 +53,9 @@ import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import static com.example.main.Text2Speech.tts;
 import static com.example.main.USBColor.deviceFound;
-import static com.example.main.WebAppInterface.s2t;
 
-public class MainActivity extends AppCompatActivity{
+
+public class MainActivity extends AppCompatActivity  {
 
     public WebView webView;
     public static final int RequestPermissionCode = 1;
@@ -108,6 +99,8 @@ public class MainActivity extends AppCompatActivity{
     public static JSONObject gps = new JSONObject();
     public static Sensors sensors = new Sensors();
     public static USBColor test = new USBColor();
+    public static Speech2Text speech2Text = new Speech2Text();
+
 
     String url = "file://" +Environment.getExternalStorageDirectory().getPath() +"/phone/welcome.html";
     //String url = "file:///android_asset/madisons.html";
@@ -188,6 +181,10 @@ public class MainActivity extends AppCompatActivity{
         //sets the speech listener
         setSpeechListener();
 
+       // startSpeech2Text();
+
+        //speech.startListening(recognizerIntent);
+
         //if the user has the permissions necessary for the project
         if (CheckPermission())
         {
@@ -209,6 +206,8 @@ public class MainActivity extends AppCompatActivity{
         }
 
     }
+
+
 
     @Override
     protected void onDestroy() {

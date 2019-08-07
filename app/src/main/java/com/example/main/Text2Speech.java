@@ -33,12 +33,39 @@ public class Text2Speech {
             tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
     }
 
-    public void setSpeechVoice(String place)
+    public void setSpeechVoice(String lang)
     {
-        if(place == "USA")
+        if( lang.equals("CanadianFrench"))
         {
-            tts.setLanguage(Locale.US);
+            tts.setLanguage(Locale.CANADA_FRENCH);
         }
+        if( lang.equals("English(UK)"))
+        {
+            tts.setLanguage(Locale.UK);
+        }
+        if( lang.equals("English(US)"))
+        {
+            Locale mylocale  = new Locale("ru");
+            tts.setLanguage(mylocale);
+        }
+        if( lang.equals("French"))
+        {
+            tts.setLanguage(Locale.FRANCE);
+        }
+        if( lang.equals("German"))
+        {
+            tts.setLanguage(Locale.GERMANY);
+        }
+        if( lang.equals("Italian"))
+        {
+            tts.setLanguage(Locale.ITALY);
+        }
+        if( lang.equals("Japanese"))
+        {
+            tts.setLanguage(Locale.JAPAN);
+        }
+
+
 
     }
 
@@ -82,8 +109,6 @@ public class Text2Speech {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-
         return voiceSet;
     }
 
