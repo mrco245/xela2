@@ -2,6 +2,7 @@ package com.example.main;
 
 import android.Manifest;
 import android.app.PendingIntent;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -23,14 +24,21 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Message;
+import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
+import android.speech.tts.TextToSpeech;
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.JavascriptInterface;
 import android.webkit.PermissionRequest;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -41,6 +49,9 @@ import androidx.core.content.ContextCompat;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Locale;
+
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static android.Manifest.permission.ACCESS_NETWORK_STATE;
@@ -49,7 +60,9 @@ import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.READ_PHONE_STATE;
 import static android.Manifest.permission.RECORD_AUDIO;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static com.example.main.Text2Speech.tts;
 import static com.example.main.USBColor.deviceFound;
+import static com.example.main.WebAppInterface.s2t;
 
 public class MainActivity extends AppCompatActivity{
 
@@ -96,8 +109,8 @@ public class MainActivity extends AppCompatActivity{
     public static Sensors sensors = new Sensors();
     public static USBColor test = new USBColor();
 
-    //String url = "file://" +Environment.getExternalStorageDirectory().getPath() +"/phone/welcome.html";
-    String url = "file:///android_asset/madisons.html";
+    String url = "file://" +Environment.getExternalStorageDirectory().getPath() +"/phone/welcome.html";
+    //String url = "file:///android_asset/madisons.html";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -144,7 +157,14 @@ public class MainActivity extends AppCompatActivity{
 
 
         //adds the javascipt functionality and names the handler
-        webView.addJavascriptInterface(new WebAppInterface(this), "xelaHandler");
+        webView.addJavascriptInterface(new WebAppInterface(this) {
+            @JavascriptInterface
+                public void performClick()
+            {
+                 Intent intRef = new Intent(MainActivity.this, Text2Speech.class );
+                 startActivity(intRef);
+            }
+        },"xelaHandler");
 
         webView.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
 
@@ -165,7 +185,8 @@ public class MainActivity extends AppCompatActivity{
         startLocationListener();
         //checks the network state
         checkInternet();
-
+        //sets the speech listener
+        setSpeechListener();
 
         //if the user has the permissions necessary for the project
         if (CheckPermission())
@@ -186,8 +207,6 @@ public class MainActivity extends AppCompatActivity{
                 }
             }
         }
-
-
 
     }
 
@@ -439,6 +458,26 @@ public class MainActivity extends AppCompatActivity{
         sensors.getPressure();
         sensors.getTemp();
         sensors.getHumidity();
+    }
+
+    public void setSpeechListener()
+    {
+        tts=new TextToSpeech(MainActivity.this, new TextToSpeech.OnInitListener() {
+
+            @Override
+            public void onInit(int status) {
+                // TODO Auto-generated method stub
+                if(status == TextToSpeech.SUCCESS){
+                    int result=tts.setLanguage(Locale.UK);
+                    if(result==TextToSpeech.LANG_MISSING_DATA ||
+                            result==TextToSpeech.LANG_NOT_SUPPORTED){
+                        Log.e("error", "This Language is not supported");
+                    }
+                }
+                else
+                    Log.e("error", "Initilization Failed!");
+            }
+        });
     }
 
 

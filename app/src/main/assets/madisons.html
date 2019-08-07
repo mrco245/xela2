@@ -6,11 +6,8 @@
     <title>Web App</title>
 
     <script language="JavaScript" type="text/javascript">
-
-
-
         function getLedList()
-{
+        {
 			var list1 = document.getElementById('command');
             var list2 = document.getElementById('led-number');
             var list3 = document.getElementById('led');
@@ -32,18 +29,14 @@
 			else if(list1SelectedValue == 'solo')
 			{
 			    list2.options.length=0;
-			    list2.options[0] = new Option('--Select--', '');
-                list2.options[1] = new Option('Strip 1', '1');
-                list2.options[2] = new Option('Strip 4', '4');
 
-                list3.options.length=0;
+			    list3.options.length=0;
 			    list3.options[0] = new Option('--Select--', '');
                 list3.options[1] = new Option('Led 1', '1');
                 list3.options[2] = new Option('Led 4', '4');
 			}
-}
+       }
     </script>
-
 
 </head>
 <body>
@@ -72,7 +65,7 @@
             <option>_--Select--</option>
             <option value="single">Single Strip One Color</option>
             <option value="multi">All Strips One Color</option>
-            <option value="solo">A single led on one strip</option>
+            <option value="solo">A single led</option>
         </select>
 
         <select id="led-number">
@@ -87,49 +80,13 @@
 </div>
 
 <br>
-<style>
-  .speech {border: 1px solid #DDD; width: 300px; padding: 0; margin: 0}
-  .speech input {border: 0; width: 240px; display: inline-block; height: 30px;}
-  .speech img {float: right; width: 40px }
-</style>
+<input type="text" id="text2Speech" value="Enter Text to be read">
+<button onclick="sendAction('text-to-speech')">Text to Speech</button>
+<br>
+<button onclick="sendAction('Set-Voice')">Set Voice</button>
 
-<!-- Search Form -->
+<div id="Spoken-Text"></div>
 
-    <div class="speech">
-        <input type="text" name="q" id="transcript" placeholder="Speak" />
-        <button onclick="startDictation()">Start</button>
-    </div>
-<button onclick="sendAction('speech-to-text')">Send text</button>
-
-
-<!-- HTML5 Speech Recognition API -->
-<script>
-
-  function startDictation() {
-
-    if (window.hasOwnProperty('webkitSpeechRecognition')) {
-
-      var recognition = new webkitSpeechRecognition();
-
-      recognition.continuous = false;
-      recognition.interimResults = false;
-
-      recognition.lang = "en-US";
-      recognition.start();
-
-      recognition.onresult = function(e) {
-        document.getElementById('transcript').value
-                                 = e.results[0][0].transcript;
-        recognition.stop();
-      };
-
-      recognition.onerror = function(e) {
-        recognition.stop();
-      }
-
-    }
-  }
-</script>
 
 <h3 id="change" >The following displays the information collected from the phone</h3>
 <p>
@@ -176,38 +133,44 @@
 
 </body>
 
+
 <script type="text/javascript">
 
 function sendAction(action)
 {
-    //var color = document.getElementById("favcolor").value;
-    //var ledStr = document.getElementById("led-number").value;
-    //var command = document.getElementById("command").value;
-    //var sololed = document.getElementById("led").value;
-
-    //var s2t = document.getElementById("transcript").value;
-
     switch(action)
     {
         case "set-color":
-            var color = document.getElementById("favcolor").value;
-            var ledStr = document.getElementById("led-number").value;
+
             var command = document.getElementById("command").value;
+            var ledStr = document.getElementById("led-number").value;
             var sololed = document.getElementById("led").value;
+            var color = document.getElementById("favcolor").value;
 
-            var data_in = {"color" : color, "ledStr":ledStr, "command": command, "sololed":sololed};
+           // if(command == "multi")
+           // {
+            //    var data_in = {"command": command, "color":color};
+            //}
+            //if(command == "single")
+            //{
+            //    var data_in = {"command": command, "ledStr":ledStr", "color":color};
+            //}
+           // else
+           // {
+                var data_in = {"command": command, "ledStr":ledStr,  "sololed":sololed, "color" : color};
+           // }
             break;
-        case "speech-to-text":
-            var s2t = document.getElementById("transcript").value;
 
-            var data_in = {"s2t":s2t};
+        case "text-to-speech":
+            var Text2Speech = document.getElementById("text2Speech").value;
+            var data_in = {"Text2Speech": Text2Speech};
             break;
+
         default:
-
-
     }
 
-    var data_out = xelaHandler.xelaHandler(action, JSON.stringify(data_in))
+    var data_out = xelaHandler.xelaHandler(action, JSON.stringify(data_in));
+
     returnAction(action, data_out);
 
 }
@@ -224,6 +187,10 @@ function returnAction(action, data_out)
     {
         case "set-color":
             document.getElementById("change").style.color = data_out["rawdata"]["color"];
+            break;
+
+        case "speech-to-text":
+            document.getElementById("Spoken-Text").innerHTML = data_out["rawdata"]["Speech2Text"];
             break;
         case "time":
             document.getElementById("time").innerHTML = data_out["Time"];
